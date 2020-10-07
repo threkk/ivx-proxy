@@ -13,7 +13,7 @@ import (
 	input "github.com/mmcdole/gofeed"
 )
 
-func (a *app) handleRSS() http.HandlerFunc {
+func (a *App) handleRSS() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
@@ -63,13 +63,14 @@ func (a *app) handleRSS() http.HandlerFunc {
 	}
 }
 
-type feed struct {
+// Feed Contains the feed url, the parsed RSS feed and the modified output.
+type Feed struct {
 	url    string      // We need to keep it for the caching
 	parsed *input.Feed // Maybe this can be removed?
 	Output *output.Feed
 }
 
-func (f *feed) populateOutput(baseURL string) {
+func (f *Feed) populateOutput(baseURL string) {
 	f.Output = &output.Feed{
 		Title: f.parsed.Title,
 		Link: &output.Link{
@@ -127,7 +128,7 @@ func (f *feed) populateOutput(baseURL string) {
 
 		if len(item.Enclosures) > 0 {
 			param := url.Values{
-				"download": []string{item.Link}, // []string{item.Enclosures[0].URL},
+				"dl": []string{item.Link}, // []string{item.Enclosures[0].URL},
 			}
 			f.Output.Items[i].Enclosure = &output.Enclosure{
 				Url:    baseURL + "?" + param.Encode(),
@@ -138,7 +139,8 @@ func (f *feed) populateOutput(baseURL string) {
 	}
 }
 
-func NewFeed(url string, baseURL string) (*feed, error) {
+// NewFeed Creates a new feed based on the feed URL.
+func NewFeed(url string, baseURL string) (*Feed, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	fp := input.NewParser()
@@ -148,7 +150,7 @@ func NewFeed(url string, baseURL string) (*feed, error) {
 		return nil, err
 	}
 
-	f := &feed{
+	f := &Feed{
 		url:    url,
 		parsed: fd,
 	}

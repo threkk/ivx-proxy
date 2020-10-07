@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	ivp := app.NewApp()
+	ivp := app.NewApp("localhost:3000")
 	srv := &http.Server{
 		Handler:        ivp,
 		Addr:           ":3000",
@@ -25,11 +25,12 @@ func main() {
 		log.Fatal(srv.ListenAndServe())
 	}()
 
-	sigint := make(chan os.Signal, 1)
+	signals := make(chan os.Signal, 1)
 
-	signal.Notify(sigint, os.Interrupt)
+	signal.Notify(signals, os.Interrupt)
+	signal.Notify(signals, os.Kill)
 
-	<-sigint
+	<-signals
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()

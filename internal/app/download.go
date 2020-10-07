@@ -28,13 +28,13 @@ func getURLandFindOne(url string, re *regexp.Regexp) (string, error) {
 
 	elements := re.FindSubmatch(body)
 	if len(elements) != 2 {
-		return "", fmt.Errorf("Element not found.")
+		return "", fmt.Errorf("Element not found")
 	}
 
 	return string(elements[1]), nil
 }
 
-func (a *app) handleDownload() http.HandlerFunc {
+func (a *App) handleDownload() http.HandlerFunc {
 	reDownload := regexp.MustCompile(`\$\('\.downloadlink'\)\.load\('(.+)'\)`)
 	reFile := regexp.MustCompile(`downloadFollow\(event,'(.+)'\);`)
 

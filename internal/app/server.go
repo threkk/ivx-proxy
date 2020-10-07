@@ -2,32 +2,44 @@ package app
 
 import (
 	"net/http"
+	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
-type app struct {
+// App ivoox proxy entry point.
+type App struct {
 	router  *mux.Router
-	db      []string
 	baseURL string
 }
 
-func (a *app) routes() {
-	a.router.HandleFunc("/", a.handleRSS()).Methods("GET").Queries("rss", "{url}")
-	a.router.HandleFunc("/", a.handleDownload()).Methods("GET").Queries("download", "{url}")
-	a.router.HandleFunc("/", a.handleIndex())
-	a.router.PathPrefix("/").HandlerFunc(a.handle404())
+func (a *App) routes() {
+	a.router.HandleFunc("/", a.handleRSS()).Methods("GET").Queries("feed", "{url}")
+	a.router.HandleFunc("/", a.handleDownload()).Methods("GET").Queries("dl", "{url}")
+	a.router.HandleFunc("/", a.handleIndex()).Methods("GET")
+	a.router.PathPrefix("/").HandlerFunc(a.handle404()).Methods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
 }
 
-func (a *app) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.router.ServeHTTP(w, r)
 }
 
-func NewApp() *app {
-	a := &app{
-		baseURL: "localhost:3000",
+// NewApp Creates a new instance of ivoox proxy
+func NewApp(baseURL string) *App {
+	a := &App{
+		baseURL: baseURL,
 	}
 	a.router = mux.NewRouter()
 	a.routes()
+
+	a.router.Use(func(h http.Handler) http.Handler {
+		return handlers.CombinedLoggingHandler(os.Stdout, h)
+	})
+	a.router.Use(handlers.ProxyHeaders)
+	a.router.Use(corsMiddleware)
+	a.router.Use(mux.CORSMethodMiddleware(a.router))
+	a.router.Use(handlers.RecoveryHandler())
+
 	return a
 }
