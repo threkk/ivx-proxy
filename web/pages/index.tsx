@@ -3,10 +3,40 @@ import URLWidget from '../components/url'
 
 export default function Home(): JSX.Element {
   return (
-    <div>
+    <>
       <Head>
-        <title>iVoox Proxy</title>
         <link rel='icon' href='/favicon.ico' />
+
+        <title>iVoox Proxy</title>
+        <meta name='title' content='iVoox Proxy' />
+        <meta
+          name='description'
+          content='Access iVoox Originals from the app of your choice.'
+        />
+
+        <meta property='og:type' content='website' />
+        <meta
+          property='og:url'
+          content='https://github.com/threkk/ivoox-proxy'
+        />
+        <meta property='og:title' content='iVoox Proxy' />
+        <meta
+          property='og:description'
+          content='Access iVoox Originals from the app of your choice.'
+        />
+        <meta property='og:image' content='/ivpx.jpg' />
+
+        <meta property='twitter:card' content='summary_large_image' />
+        <meta
+          property='twitter:url'
+          content='https://github.com/threkk/ivoox-proxy'
+        />
+        <meta property='twitter:title' content='iVoox Proxy' />
+        <meta
+          property='twitter:description'
+          content='Access iVoox Originals from the app of your choice.'
+        />
+        <meta property='twitter:image' content='/ivpx.jpg' />
       </Head>
 
       <main className='columns is-gapless'>
@@ -47,7 +77,7 @@ export default function Home(): JSX.Element {
             <small className='small'>
               Created by <a href='https://threkk.com'>threkk</a> to deal with
               the frustration of his favourite podcast moving to iVoox Originals
-              only.
+              exclusively.
             </small>
           </p>
           <p>
@@ -59,6 +89,6 @@ export default function Home(): JSX.Element {
           </p>
         </div>
       </footer>
-    </div>
+    </>
   )
 }
