@@ -12,23 +12,23 @@ import (
 
 func getURLandFindOne(url string, re *regexp.Regexp) (string, error) {
 	if !isValidURL(url) {
-		return "", fmt.Errorf("The parameter provided is not a URL: %s", url)
+		return "", fmt.Errorf("the parameter provided is not a URL: %s", url)
 	}
 
 	res, err := http.Get(url)
 	if err != nil || res.StatusCode != 200 {
-		return "", fmt.Errorf("Error requesting the remote resource: %s", url)
+		return "", fmt.Errorf("error requesting the remote resource: %s", url)
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return "", fmt.Errorf("Error reading the remote resource: %s", url)
+		return "", fmt.Errorf("error reading the remote resource: %s", url)
 	}
 
 	elements := re.FindSubmatch(body)
 	if len(elements) != 2 {
-		return "", fmt.Errorf("Element not found")
+		return "", fmt.Errorf("element not found")
 	}
 
 	return string(elements[1]), nil
@@ -45,10 +45,10 @@ func (a *App) handleDownload() http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Add("Content-Type", "application/json; charset=utf-8")
-			json.NewEncoder(w).Encode(errorRes{
-				Code:        400,
-				Status:      "Bad Request",
-				Description: err.Error(),
+			json.NewEncoder(w).Encode(errorResponse{
+				Status:        400,
+				Code:      "Bad Request",
+				Message: err.Error(),
 			})
 			return
 		}
@@ -57,10 +57,10 @@ func (a *App) handleDownload() http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Add("Content-Type", "application/json; charset=utf-8")
-			json.NewEncoder(w).Encode(errorRes{
-				Code:        400,
-				Status:      "Bad Request",
-				Description: err.Error(),
+			json.NewEncoder(w).Encode(errorResponse{
+				Status:        400,
+				Code:      "Bad Request",
+				Message: err.Error(),
 			})
 			return
 		}

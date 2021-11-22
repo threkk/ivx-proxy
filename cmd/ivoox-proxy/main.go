@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +12,16 @@ import (
 	"github.com/threkk/ivoox-proxy/internal/app"
 )
 
+var port int
+var baseAddress string
+
+func init() {
+	flag.IntVar(&port, "port", 3000, "Specify an alternate port [default: 3000]")
+	flag.StringVar(&baseAddress, "base", "localhost", "Specify the base address. This is import to generate the right URL [default: localhost]")
+}
+
 func main() {
-	ivp := app.NewApp("localhost:3000")
+	ivp := app.NewApp()
 	srv := &http.Server{
 		Handler:        ivp,
 		Addr:           ":3000",

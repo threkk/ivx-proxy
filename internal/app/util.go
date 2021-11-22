@@ -1,6 +1,11 @@
 package app
 
-import "net/url"
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+)
 
 func isValidURL(s string) bool {
 	u, err := url.Parse(s)
@@ -11,8 +16,21 @@ func isValidURL(s string) bool {
 	return true
 }
 
-type errorRes struct {
-	Code        int    `json:"code"`
-	Status      string `json:"status"`
-	Description string `json:"description"`
+func fetch(u string) (string, error) {
+	if !isValidURL(u) {
+		return "", fmt.Errorf("the parameter provided is not a URL: %s", u)
+	}
+
+	res, err := http.Get(u)
+	if err != nil || res.StatusCode != 200 {
+		return "", fmt.Errorf("error requesting the remote resource: %s", u)
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", fmt.Errorf("error reading the remote resource: %s", u)
+	}
+
+	return string(body), nil
 }
