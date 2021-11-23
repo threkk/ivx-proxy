@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"net/http"
@@ -15,6 +16,18 @@ func (a *App) handleIndex() http.HandlerFunc {
 func (a *App) handle404() http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
 		a.HandleError(w, 404, "These are not the droids you are looking for.")
+	}
+}
+
+func (a *App) handleHealth() http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(struct {
+			Status string `json:"status"`
+		}{
+			Status: "UP",
+		})
 	}
 }
 

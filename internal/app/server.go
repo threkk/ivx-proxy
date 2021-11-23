@@ -19,6 +19,7 @@ type App struct {
 func (a *App) routes() {
 	a.router.HandleFunc("/feed", a.handleRSS()).Methods("GET").Queries("url", "{url}")
 	a.router.HandleFunc("/dl", a.handleDownload()).Methods("GET").Queries("url", "{url}")
+	a.router.HandleFunc("/health", a.handleHealth()).Methods("GET")
 	a.router.HandleFunc("/", a.handleIndex()).Methods("GET")
 	a.router.PathPrefix("/").HandlerFunc(a.handle404()).Methods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
 }
