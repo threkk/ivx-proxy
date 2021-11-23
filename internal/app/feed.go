@@ -25,27 +25,29 @@ var reEnclosure = regexp.MustCompile(IVOOX_RE_ENCLOSURE)
 func (a *App) handleRSS() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		host := r.Host
 
-		if !isValidURL(vars["url"]) {
-			a.HandleError(w, http.StatusUnprocessableEntity, "The parameter provided is not a URL")
+		if url, ok := vars["url"]; !ok || !isValidURL(url) {
+			a.HandleError(w, http.StatusUnprocessableEntity, "The parameter provided is missing or not a URL")
 			return
 		}
 
 		podcastURL, err := url.Parse(vars["url"])
 		if err != nil || podcastURL.Host != IVOOX_HOST {
+			a.Err(err.Error())
 			a.HandleError(w, http.StatusUnprocessableEntity, "The podcast must be hosted on ivoox.com")
 			return
 		}
 
 		rawRSS, err := fetch(podcastURL.String())
 		if err != nil {
+			a.Err(err.Error())
 			a.HandleError(w, http.StatusBadRequest, "The requested url is not available at the moment")
 		}
 
-		feed, err := NewFeed(rawRSS, host)
+		feed, err := NewFeed(rawRSS, r)
 		if err != nil {
-			a.HandleError(w, http.StatusBadRequest, "The URL could not be retrieved")
+			a.Err(err.Error())
+			a.HandleError(w, http.StatusInternalServerError, "The URL could not be retrieved")
 			return
 		}
 
@@ -59,6 +61,7 @@ func (a *App) handleRSS() http.HandlerFunc {
 		}
 
 		if err != nil {
+			a.Err(err.Error())
 			a.HandleError(w, http.StatusInternalServerError, "The response could not be generated")
 			return
 		}
@@ -84,6 +87,7 @@ type Feed struct {
 	BaseURL          string
 	feed             *gofeed.Feed
 	rawRSS           string
+	scheme           string
 }
 
 // String This is a bit trickier than expected. gofeed does not allow to export
@@ -121,7 +125,7 @@ func (f *Feed) Patch() string {
 }
 
 // NewFeed Creates a new feed based on a string.
-func NewFeed(content string, baseURL string) (*Feed, error) {
+func NewFeed(content string, r *http.Request) (*Feed, error) {
 	fp := gofeed.NewParser()
 	fd, err := fp.ParseString(content)
 
@@ -133,9 +137,10 @@ func NewFeed(content string, baseURL string) (*Feed, error) {
 
 	f := &Feed{
 		IsIvooxOriginals: isIvooxOriginals,
-		BaseURL:          baseURL,
+		BaseURL:          r.URL.Host,
 		feed:             fd,
 		rawRSS:           content,
+		scheme:           r.URL.Scheme,
 	}
 
 	return f, nil
@@ -148,7 +153,7 @@ func (f *Feed) generateURL(link string) string {
 	newURL := url.URL{
 		Host:     f.BaseURL,
 		Path:     "/dl",
-		Scheme:   "https",
+		Scheme:   f.scheme,
 		User:     f.UserInfo,
 		RawQuery: query.Encode(),
 	}
