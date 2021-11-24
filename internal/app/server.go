@@ -12,8 +12,11 @@ import (
 
 // App ivoox proxy entry point.
 type App struct {
-	router *mux.Router
-	logger *log.Logger
+	BaseURL  string
+	User string
+	Password string
+	router   *mux.Router
+	logger   *log.Logger
 }
 
 func (a *App) routes() {
@@ -61,17 +64,23 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewApp Creates a new instance of ivoox proxy
-func NewApp() *App {
-	a := &App{}
+func NewApp(baseURL string, user string, password string) *App {
+	a := &App{
+		BaseURL:  baseURL,
+		User: user,
+		Password: password,
+	}
 
+	// Initialise fields
 	a.logger = log.New(os.Stderr, "[app]", log.LstdFlags)
-
 	a.router = mux.NewRouter()
+
+	// Set routes.
 	a.routes()
 
-	a.router.Use(func(h http.Handler) http.Handler {
-		return handlers.CombinedLoggingHandler(os.Stdout, h)
-	})
+	// Set middleware
+	a.router.Use(loggingMiddleware)
+	a.router.Use(authMiddleware(a))
 	a.router.Use(handlers.ProxyHeaders)
 	a.router.Use(corsMiddleware)
 	a.router.Use(mux.CORSMethodMiddleware(a.router))

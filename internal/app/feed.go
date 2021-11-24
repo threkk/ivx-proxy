@@ -51,6 +51,11 @@ func (a *App) handleRSS() http.HandlerFunc {
 			return
 		}
 
+		if a.BaseURL != "" {
+			a.Log(fmt.Sprintf("Using %s as base address instead of %s", a.BaseURL, feed.BaseURL))
+			feed.BaseURL = a.BaseURL
+		}
+
 		if user, pass, ok := r.BasicAuth(); ok {
 			feed.UserInfo = url.UserPassword(user, pass)
 		}
