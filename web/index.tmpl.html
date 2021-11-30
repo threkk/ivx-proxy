@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iVx-proxy - {{ .Base }}</title>
+
+    <!-- Favicon -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/favicon-16x16.png"
+    />
+    <link rel="manifest" href="assets/site.webmanifest" />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="assets/simple.min.css" />
+    <link rel="stylesheet" href="ivx-proxy.css" />
+
+    <!-- Metatags -->
+    <!-- Primary Meta Tags -->
+    <title>iVx-Proxy</title>
+    <meta name="title" content="iVx-Proxy" />
+    <meta
+      name="description"
+      content="Generate an alternative proxy to listen your iVoox Originals podcasts in the application of your choice."
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{.Base}}" />
+    <meta property="og:title" content="iVx-Proxy" />
+    <meta
+      property="og:description"
+      content="Generate an alternative proxy to listen your iVoox Originals podcasts in the application of your choice."
+    />
+    <meta property="og:image" content="assets/cover.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{{.Base}}" />
+    <meta property="twitter:title" content="iVx-Proxy" />
+    <meta
+      property="twitter:description"
+      content="Generate an alternative proxy to listen your iVoox Originals podcasts in the application of your choice."
+    />
+    <meta property="twitter:image" content="assets/cover.png" />
+  </head>
+  <body>
+    <main>
+      <img
+        src="assets/cover.png"
+        alt="iVx-Proxy"
+        decoding="async"
+        width="3500"
+        height="1440"
+      />
+
+      <form>
+        <p>
+          <label for="url"><strong>URL of the podcast feed</strong></label
+          ><br />
+          <input
+            autofocus
+            type="url"
+            name="url"
+            id="url"
+            placeholder="https://www.ivoox.com/feed_fg_badcafe_filtro_1.xml"
+            pattern="https://.*"
+            required
+          />
+        </p>
+        <p>
+          <button>Submit</button>
+        </p>
+      </form>
+      <h2>FAQ</h2>
+      <details>
+        <summary>How does this work?</summary>
+        <p>
+          iVoox Originals podcasts can not be listened without using their
+          application. The proxy will use public information to build an
+          alternative feed that can be used in your favourite application
+          instead of theirs. This is, freedom for you to choose your application
+          instead of being forced to use theirs.
+        </p>
+      </details>
+      <details>
+        <summary>What podcast can I submit?</summary>
+        The podcast <strong>MUST</strong>
+        <ul>
+          <li>Be hosted in iVoox</li>
+          <li>Be an iVoox original</li>
+          <li>Have a public RSS feed</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Got the link, now what?</summary>
+        You can remove the old feed from the podcast application and use the new
+        one instead. In order to add/remove the podcast, check the instructions
+        of your application.
+      </details>
+      <details>
+        <summary>Is this legal?</summary>
+        This is within some grey area. The information used is publicly
+        available information in the website. In order to build the alternative
+        feed, <em>iVx-Proxy</em> does not make use of any credential or
+        restricted access to the original feed. It falls within the same
+        legislation as
+        <a href="https://en.wikipedia.org/wiki/Web_scraping">web scraping</a>.
+        You can achieve the same result with the developer tools and patience,
+        although
+        <a
+          href="https://www.nytimes.com/2021/10/15/us/missouri-st-louis-post-teachers-hack.html"
+          >you never know...</a
+        >
+      </details>
+      <details>
+        <summary>I am having some issues...</summary>
+        <p>
+          Open an issue on
+          <a href="https://github.com/threkk/ivx-proxy/issues">Github</a>
+        </p>
+      </details>
+    </main>
+
+    <footer>
+      <p>
+        Powered by <a href="https://github.com/threkk/ivx-proxy">iVx-Proxy</a>.
+        Design by <a href="https://simplecss.org">Simple.css</a>. Created by
+        <a href="https://threkk.com">threkk</a>.
+      </p>
+    </footer>
+  </body>
+</html>
