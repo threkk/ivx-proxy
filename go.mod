@@ -1,4 +1,4 @@
-module github.com/threkk/ivoox-proxy
+module github.com/threkk/ivx-proxy
 
 go 1.14
 

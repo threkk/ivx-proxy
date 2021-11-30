@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/threkk/ivoox-proxy/internal/app"
+	"github.com/threkk/ivx-proxy/internal/app"
 )
 
 var port int
