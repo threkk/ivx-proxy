@@ -5,11 +5,13 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/http"
+
+	"github.com/threkk/ivx-proxy/web"
 )
 
 func (a *App) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
-		fmt.Fprint(w, "Handle Index")
+		fmt.Fprint(w, web.IndexTmpl)
 	}
 }
 

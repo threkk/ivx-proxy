@@ -8,12 +8,13 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/threkk/ivx-proxy/web"
 )
 
 // App ivoox proxy entry point.
 type App struct {
 	BaseURL  string
-	User string
+	User     string
 	Password string
 	router   *mux.Router
 	logger   *log.Logger
@@ -24,6 +25,11 @@ func (a *App) routes() {
 	a.router.HandleFunc("/dl", a.handleDownload()).Methods("GET").Queries("url", "{url}")
 	a.router.HandleFunc("/health", a.handleHealth()).Methods("GET")
 	a.router.HandleFunc("/", a.handleIndex()).Methods("GET")
+
+	// Static assets
+	a.router.PathPrefix("/assets/").Handler(http.FileServer(http.FS(web.StaticAssets)))
+
+	// Kitchen sink
 	a.router.PathPrefix("/").HandlerFunc(a.handle404()).Methods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
 }
 
@@ -67,7 +73,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func NewApp(baseURL string, user string, password string) *App {
 	a := &App{
 		BaseURL:  baseURL,
-		User: user,
+		User:     user,
 		Password: password,
 	}
 
