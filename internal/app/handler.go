@@ -3,17 +3,8 @@ package app
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"net/http"
-
-	"github.com/threkk/ivx-proxy/web"
 )
-
-func (a *App) handleIndex() http.HandlerFunc {
-	return func(w http.ResponseWriter, _ *http.Request) {
-		fmt.Fprint(w, web.IndexTmpl)
-	}
-}
 
 func (a *App) handle404() http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
